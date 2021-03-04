@@ -1,64 +1,32 @@
+from player import Player
+import world
 
-class Weapon:
-    def __init__(self):
-        raise NotImplementedError("Do not create raw Weapon objects.")
-
-    def __str__(self):
-        return self.name
-
-
-class Rock(Weapon):
-    def __init__(self):
-        self.name = "Rock"
-        self.description = "A fist-sized rock, suitable for bludgeoning."
-        self.damage = 5
-
-
-class Dagger(Weapon):
-    def __init__(self):
-        self.name = "Dagger"
-        self.description = "A small dagger with some rust. " \
-                           "Somewhat more dangerous than a rock."
-        self.damage = 10
-
-
-class RustySword(Weapon):
-    def __init__(self):
-        self.name = "Rusty sword"
-        self.description = "This sword is showing its age, " \
-                           "but still has some fight in it."
-        self.damage = 20
-
-inventory = ['Dagger','Gold(5)','Crusty Bread']
 
 def play():
+    player = Player()
     action_input = get_player_command()
     user_name = input("What is your name? ")
 
     print("Hello, " + user_name)
-
     print("You find yourself lying in a small meadow.\n")
-    print(action_input)
+    while True:
+        room = world.tile_at(player.x, player.y)
+        print(room.intro_text())
+        action_input = get_player_command()
+        if action_input in ['n', 'N']:
+            player.move_north()
+        elif action_input in ['s', 'S']:
+            player.move_south()
+        elif action_input in ['e', 'E']:
+            player.move_east()
+        elif action_input in ['w', 'W']:
+            player.move_west()
+        elif action_input in ['i', 'I']:
+            player.print_inventory()
+        else:
+            print("Invalid action!")
 
 def get_player_command():
     return input('>> ')
 
-def display_inventory():
-    print(inventory)
-    for item in inventory:
-        print('* ' + str(item))
-    best_weapon = most_powerful_weapon(inventory)
-    print("Your best weapon is your {}".format(best_weapon))
-
-def most_powerful_weapon(inventory):
-    max_damage = 0
-    best_weapon = None
-    for item in inventory:
-        try:
-            if item.damage > max_damage:
-                best_weapon = item
-                max_damage = item.damage
-        except AttributeError:
-            pass
-
-    return best_weapon
+play()
